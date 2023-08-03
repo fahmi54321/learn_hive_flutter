@@ -14,28 +14,24 @@ class HiveObjectExample extends StatefulWidget {
 class _HiveObjectExampleState extends State<HiveObjectExample> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     init();
   }
 
   void init() async {
-    Hive.registerAdapter(PersonAdapter());
-    var persons = await Hive.openBox<Person>('persons');
+    // Hive.registerAdapter(PersonAdapter()); // wajib inisialisasi di main.dart
+    // var persons = await Hive.openBox<Person>('persons');
 
-    // Store this object for the first time
-    var person = Person(nama: 'Fahmi');
+    // persons.add(Person(nama: 'Abdul')); // default key nya auto increment
+    // persons.put('someKey', Person(nama: 'Aziz')); // key nya bisa custom
+    // persons.delete(1);
+    // persons.clear();
+    // debugPrint('person keyAt : ${persons.keyAt(0)}');
+    // debugPrint('person valueAt : ${persons.getAt(0)?.nama}');
 
-    // persons.add(person);
-
-    log('Number of persons: ${persons.values.toList()}');
-    log("Lisa's first key: ${person.key}");
-
-    // person.nama = 'Lucas';
-    // person.save(); // Update object
-
-    // log('Number of persons after update: ${persons.length}');
-    // log("Person first key: ${person.key}");
+    // for (var data in persons.values.toList()) {
+    //   debugPrint('person key : ${data.key}, person name : ${data.nama}');
+    // }
   }
 
   @override

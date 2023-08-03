@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:learn_hive_flutter/hive_list_example.dart';
 import 'package:learn_hive_flutter/hive_object_example.dart';
 import 'package:learn_hive_flutter/value_listenable_example.dart';
 import 'package:learn_hive_flutter/write_read_object_example.dart';
@@ -127,6 +128,23 @@ class _HomePageState extends State<HomePage> {
             },
             child: Text(
               'Goto Next Learn Hive Object',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+            ),
+          ),
+          MaterialButton(
+            color: Theme.of(context).colorScheme.primary,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HiveListExample(),
+                ),
+              );
+            },
+            child: Text(
+              'Goto Next Learn Hive List (on progress bagian store hive list)',
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onPrimary,
               ),

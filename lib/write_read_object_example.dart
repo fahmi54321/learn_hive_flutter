@@ -20,7 +20,7 @@ class _WriteAndReadObjectExampleState extends State<WriteAndReadObjectExample> {
   }
 
   init() async {
-    Hive.registerAdapter(UserAdapter());
+    Hive.registerAdapter(UserAdapter()); // wajib inisialisasi di main.dart
     var box = await Hive.openBox<User>('userBox');
 
     box.put(
