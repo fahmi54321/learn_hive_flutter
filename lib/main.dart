@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:learn_hive_flutter/constants.dart';
-import 'package:learn_hive_flutter/home_page.dart';
+import 'package:learn_hive_flutter/draw_page.dart';
+import 'package:learn_hive_flutter/models/color_path.dart';
 
 void main() async {
-  //todo 1 inisialisasi (next home_page.dart)
   await Hive.initFlutter();
-  await Hive.openBox<String>(favoritesBox);
+  Hive.registerAdapter(ColoredPathAdapter());
+  await Hive.openBox<ColoredPath>(sketchBox);
 
   runApp(const MyApp());
 }
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(),
+      home: const DrawingScreen(),
     );
   }
 }
