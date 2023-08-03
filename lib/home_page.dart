@@ -1,11 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:learn_hive_flutter/hive_list_example.dart';
-import 'package:learn_hive_flutter/hive_object_example.dart';
-import 'package:learn_hive_flutter/value_listenable_example.dart';
-import 'package:learn_hive_flutter/write_read_object_example.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:learn_hive_flutter/constants.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,142 +10,80 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  //todo 2
+  late Box<String> favoriteBooksBox;
+
+  //todo 3
   @override
   void initState() {
     super.initState();
-
-    init();
+    favoriteBooksBox = Hive.box(favoritesBox);
   }
 
-  init() async {
-    // open box
-    var box = await Hive.openBox('testBox');
-    var lazyBox = await Hive.openLazyBox<String>('lazyBox');
-    var writeNullBox = await Hive.openBox('writeNullBox');
+  //todo 4
+  void onFavoritePress(int index) {
+    if (favoriteBooksBox.containsKey(index)) {
+      favoriteBooksBox.delete(index);
+      return;
+    }
+    favoriteBooksBox.put(index, books[index]);
+  }
 
-    log('box is open : ${box.isOpen}');
+  // todo 5
+  void onClearPress() {
+    favoriteBooksBox.clear();
+  }
 
-    // write
-    await box.put('key', 'name');
-    await box.put('key2', ['nama1', 'nama2', 'nama3']);
-    await box.put(123, 'number key');
-    await box.putAll(
-      {'key3': 'value3.1', 'key4': 'value.3.2'},
-    );
-    var future = lazyBox.put('keyFuture', 'value');
-    writeNullBox.put('keyWriteNullBox', 'value');
-    writeNullBox.put('keyWriteNullBox', null);
-    // writeNullBox.delete('keyWriteNullBox');
+  // todo 6
+  Widget getIcon(int index) {
+    if (favoriteBooksBox.containsKey(index)) {
+      return const Icon(
+        Icons.favorite,
+        color: Colors.red,
+      );
+    }
 
-    // read
-    String name = box.get('key');
-    log('name : $name');
-
-    // read with default value
-    String key1 = box.get('key', defaultValue: 'kosong');
-    List<String> key2 = box.get('key2', defaultValue: 'kosong');
-    String keyNumber = box.get(123, defaultValue: 'kosong');
-    String key3 = box.get('key3', defaultValue: 'kosong');
-    String key4 = box.get('key4', defaultValue: 'kosong');
-    log('key1 : $key1');
-    log('key2 : $key2');
-    log('key3 : $key3');
-    log('keyNumber : $keyNumber');
-    log('key4 : $key4');
-
-    log('keyFuture1 : ${lazyBox.get('keyFuture')}'); // null
-    await future;
-    log('keyFuture2 : ${lazyBox.get('keyFuture')}'); // not null
-
-    // is put null = keyWriteNullBox : true
-    // is delete = keyWriteNullBox : false
-    log('keyWriteNullBox : ${writeNullBox.containsKey('keyWriteNullBox')}');
-
-    // close
-    // await box.close();
-
-    log('box is open : ${box.isOpen}');
+    return const Icon(Icons.favorite_border);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hive flutter'),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          MaterialButton(
-            color: Theme.of(context).colorScheme.primary,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ValueListenableExample(),
+        title: const Text('Favorite Books'),
+        actions: [
+          TextButton(
+            onPressed: onClearPress,
+            child: Row(
+              children: const [
+                Text(
+                  'Clear',
+                  style: TextStyle(color: Colors.white),
                 ),
-              );
-            },
-            child: Text(
-              'Goto Next Learn',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
-            ),
-          ),
-          MaterialButton(
-            color: Theme.of(context).colorScheme.primary,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => WriteAndReadObjectExample(),
-                ),
-              );
-            },
-            child: Text(
-              'Goto Next Learn Type Adapter',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
-            ),
-          ),
-          MaterialButton(
-            color: Theme.of(context).colorScheme.primary,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HiveObjectExample(),
-                ),
-              );
-            },
-            child: Text(
-              'Goto Next Learn Hive Object',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
-            ),
-          ),
-          MaterialButton(
-            color: Theme.of(context).colorScheme.primary,
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => HiveListExample(),
-                ),
-              );
-            },
-            child: Text(
-              'Goto Next Learn Hive List (on progress bagian store hive list)',
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
+                SizedBox(width: 10.0),
+                Icon(Icons.clear, color: Colors.white),
+              ],
             ),
           ),
         ],
+      ),
+      //todo 7 (finish)
+      body: ValueListenableBuilder(
+        valueListenable: favoriteBooksBox.listenable(),
+        builder: (BuildContext context, Box<String> box, _) {
+          return ListView.builder(
+            itemCount: books.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ListTile(
+                title: Text(books[index]),
+                trailing: IconButton(
+                  onPressed: () => onFavoritePress(index),
+                  icon: getIcon(index),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
