@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:learn_hive_flutter/constants.dart';
-import 'package:learn_hive_flutter/draw_page.dart';
-import 'package:learn_hive_flutter/models/color_path.dart';
+import 'package:learn_hive_flutter/contact_page.dart';
+import 'package:learn_hive_flutter/models/contacts.dart';
 
 void main() async {
   await Hive.initFlutter();
-  Hive.registerAdapter(ColoredPathAdapter());
-  await Hive.openBox<ColoredPath>(sketchBox);
+  Hive.registerAdapter<Contact>(ContactAdapter());
+  Hive.registerAdapter<Relationship>(RelationshipAdapter());
+  await Hive.openBox<Contact>(contactsBoxName);
 
   runApp(const MyApp());
 }
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const DrawingScreen(),
+      home: const ContactPage(),
     );
   }
 }

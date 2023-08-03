@@ -1,1 +1,1 @@
-const sketchBox = 'sketchpadBox';
+const String contactsBoxName = "contacts";
